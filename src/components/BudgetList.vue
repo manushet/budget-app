@@ -11,7 +11,7 @@
                     <el-button type="danger" @click="applyFilter('OUT')">Outcome</el-button>
                 </el-button-group>                
                 <div v-for="(item, prop) in filteredList" :key="prop" class="list-item text">
-                    <BudgetListItem :item='item' @deleteItem='onDeleteItem'/>
+                    <BudgetListItem :item='item'/>
                 </div>                    
             </template>
             <template v-else>
@@ -22,6 +22,7 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex';
 import BudgetListItem from '@/components/BudgetListItem.vue';
 
 export default {
@@ -29,12 +30,6 @@ export default {
     components: {
         BudgetListItem,
     },    
-    props: {
-        list: {
-            type: Object,
-            default: () => ({})
-        }
-    },
     data: () => ({
         header: "Budget List",
         emptyListTitle: 'No records have been found...',
@@ -42,22 +37,20 @@ export default {
         filterType: null,        
     }),
     computed: {
+        ...mapGetters(['operationList']),       
         isEmpty() {
-            return !Object.keys(this.list).length;
+            return !Object.keys(this.operationList).length;
         },
         filteredList() {
             if (!this.filterType) {
-                return this.list;
+                return this.operationList;
             }
-            return Object.fromEntries(Object.entries(this.list).filter(([, value]) => {
+            return Object.fromEntries(Object.entries(this.operationList).filter(([, value]) => {
                 return value.type === this.filterType;
             }));
         },
     },  
     methods: {
-        onDeleteItem(id) {
-            this.$emit('deleteItem', id);
-        },
         applyFilter(type = null) {
             this.filterType = type;  
         },

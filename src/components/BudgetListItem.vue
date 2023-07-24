@@ -25,6 +25,7 @@
 </template>
 
 <script setup>
+import { mapActions } from 'vuex';
 import { Delete } from '@element-plus/icons-vue';
 import { InfoFilled } from '@element-plus/icons-vue';
 </script>
@@ -39,7 +40,6 @@ export default {
         },
         filter: String,      
     },
-    data: () => ({}),
     computed: {
         isAmountPositive() {
             return this.item.type === 'IN' ? true : false;
@@ -49,8 +49,11 @@ export default {
         },
     },
     methods: {
+        ...mapActions([
+            'deleteOperation', 
+        ]),        
         confirmEvent(id) {
-            this.$emit('deleteItem', id);
+            this.deleteOperation(id);
         },
         cancelEvent() {
             return;

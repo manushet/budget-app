@@ -1,7 +1,7 @@
 <template>
     <TotalBalance :total='totalBalance'/>
     <FormBudget @addItemForm='onAddNewItem'/>
-    <BudgetList :list="list" @deleteItem='onDeleteItem'/>
+    <BudgetList/>
 </template>
 
 <script>
@@ -16,25 +16,10 @@ export default {
         TotalBalance,
         FormBudget,
     },
-    data: () => ({
-        list:{
-            1: {
-                type: "IN",
-                amount: 100,
-                notes: "Some INCOME comments",
-                id: 1
-            },
-            2: {
-                type: "OUT",
-                amount: 25,
-                notes: "Some OUTCOME comments",
-                id: 2
-            },            
-        }
-    }),
+    data: () => ({}),
     computed: {
         totalBalance() {
-            return Object.values(this.list).reduce((acc, item) => {
+            return Object.values(this.$store.getters.operationList).reduce((acc, item) => {
                 let amount = item.amount;
                 if (item.type === 'OUT') {
                     amount = -1 * amount;
@@ -45,17 +30,8 @@ export default {
     },
     methods: {
         onDeleteItem(id) {
-            delete this.list[id];
+            delete this.$store.getters.operationList[id];
         },
-        onAddNewItem(data) {
-            const newId = String(parseInt(Math.random() * 1000));
-            const newItem = {
-                ...data,
-                id: newId,
-                amount: Math.abs(data.amount)
-            };
-            this.list[newId] = newItem;
-        }
     }
 }
 </script>

@@ -36,68 +36,71 @@
 </template>
 
 <script>
+    import { mapActions } from 'vuex';
 
-const checkAmount = (rule, value, callback) => { 
-    //console.log(rule);
-    if (!value) {
-        return callback(new Error('Please input the operation amount'))
-    }
-    callback();
-}
-
-export default {
-    name: 'FormBudget',
-    props: {    },
-    data: () => ({
-        formData: {
-            type: 'IN',
-            notes: null,
-            amount: 0,
-        },
-        rules: {
-            type: [
-                {
-                    required: true,
-                    message: 'Please provide the additional details',
-                    trigger: 'blur',
-                }
-            ],             
-            notes: [
-                {
-                    required: true,
-                    message: 'Please provide the additional details',
-                    trigger: 'submit',
-                }
-            ],            
-            amount: [
-                {
-                    required: true,
-                    message: 'Please input the operation amount',
-                    trigger: 'submit',
-                },
-                {
-                    type: 'number',
-                    message: 'Value must be a number',
-                    trigger: 'submit',
-                },
-                { 
-                    validator: checkAmount, 
-                    trigger: 'submit' 
-                }        
-            ],
+    const checkAmount = (rule, value, callback) => { 
+        if (!value) {
+            return callback(new Error('Please input the operation amount'));
         }
-    }),
-    methods: {
-        addItem() {
-            this.$refs.addItemForm.validate(isValid => {
-                if (isValid) {
-                    this.$emit('addItemForm', {...this.formData});
-                    this.$refs.addItemForm.resetFields();
-                }
-            });
-        },       
-    } 
-};
+        callback();
+    }
+
+    export default {
+        name: 'FormBudget',
+        props: {    },
+        data: () => ({
+            formData: {
+                type: 'IN',
+                notes: null,
+                amount: 0,
+            },
+            rules: {
+                type: [
+                    {
+                        required: true,
+                        message: 'Please provide the additional details',
+                        trigger: 'blur',
+                    }
+                ],             
+                notes: [
+                    {
+                        required: true,
+                        message: 'Please provide the additional details',
+                        trigger: 'submit',
+                    }
+                ],            
+                amount: [
+                    {
+                        required: true,
+                        message: 'Please input the operation amount',
+                        trigger: 'submit',
+                    },
+                    {
+                        type: 'number',
+                        message: 'Value must be a number',
+                        trigger: 'submit',
+                    },
+                    { 
+                        validator: checkAmount, 
+                        trigger: 'submit' 
+                    }        
+                ],
+            }
+        }),
+        methods: {
+            ...mapActions([
+                'addOperation',
+            ]),        
+            addItem() {
+                this.$refs.addItemForm.validate(isValid => {
+                    if (isValid) {
+                        this.addOperation({ ...this.formData });
+                        this.$refs.addItemForm.resetFields();
+                    }                 
+                });       
+            }, 
+        },
+    };
 </script>
 
 <style scoped>
